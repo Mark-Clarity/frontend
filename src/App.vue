@@ -1,13 +1,17 @@
 <template>
   <div id="app">
     <header>
-      <h1>Mark Clarity</h1>
+      <h1>MarkClarity</h1>
     </header>
     <main>
       <router-view/>
     </main>
     <footer>
-
+      <p>
+        More searches coming soon...
+      </p>
+      <md-switch disabled>Domain Info</md-switch>
+      <md-switch disabled>Social Media Handlers</md-switch>
     </footer>
   </div>
 </template>
@@ -39,5 +43,12 @@ header {
 }
 header h1 {
   color: #9FBAD6;
+}
+
+footer {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  padding: 20px 20% 0 20%;
 }
 </style>

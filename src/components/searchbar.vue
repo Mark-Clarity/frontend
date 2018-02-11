@@ -1,15 +1,15 @@
 <template>
   <div id='searchbar'>
-    <p>
+    <p class="form-font">
       Check your company's trademark risk.
     </p>
-    <form id="search-form">
+    <form id="search-form" class="form-font">
       <md-field>
-        <label>Company Name:</label>
-        <md-input :placeholder="inputPlaceholder" v-model="searchTerm" @focus="clearPlaceholder" @blur="populatePlaceholder"></md-input>
+        <label class="form-font">Company Name:</label>
+        <md-input class="form-font" :placeholder="inputPlaceholder" v-model="searchTerm" @focus="clearPlaceholder" @blur="populatePlaceholder"></md-input>
       </md-field>
       <md-field>
-        <button class="md-raised" @click.prevent="sendSearches">Submit</button>
+        <button class="md-raised form-font" @click.prevent="sendSearches">Submit</button>
       </md-field>
     </form @submit.prevent="sendSearches">
   </div>
@@ -41,5 +41,8 @@ export default {
 <style scoped>
   #searchbar {
     margin: 30px 10% 0 10%;
+  }
+  .form-font{
+    font-size: 1rem;
   }
 </style>

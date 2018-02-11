@@ -20,7 +20,7 @@ export default {
       stateResults: [],
       fedralResults: [],
       stateRisk: {type: 'State'},
-      federalRisk: {type: 'Fedral'},
+      federalRisk: {type: 'Federal'},
       searchTerm: ''
     }
   },
@@ -31,7 +31,7 @@ export default {
         .then(res => res.json())
         .then(res => {
           console.log('state', res);
-          this.stateResults = res;
+          this.stateResults = res.data;
           this.stateResultsProcessed()
         })
     },
@@ -39,7 +39,7 @@ export default {
       fetch(`http://162.212.158.116/federal_search?query=${term}`)
         .then(res => res.json())
         .then(res => {
-          console.log('fedral', res);
+          console.log('Federal', res);
           if (res.count === 0) {
             this.fedralResults = []
           } else {
@@ -50,26 +50,26 @@ export default {
 
     },
     fedralResultsProcessed() {
-      console.log('fedral');
       let results = {
         type: 'Fedral',
         risk: '',
         trademarks: []
       }
       console.log(!this.fedralResults.length == 0);
+      var riskNumber = 0;
       if(!this.fedralResults.length == 0) {
-        console.log('if triggered');
         this.fedralResults.forEach((el) => {
           results.trademarks.push(el.wordmark)
         })
-        var riskNumber = this.fedralResults.reduce((acc, el) =>{
-          if(el.wordmark === this.searchTerm) {
-            return acc++
+        riskNumber = this.fedralResults.reduce((acc, el) =>{
+          console.log('reduce', el.wordmark.toLowerCase().includes(this.searchTerm.toLowerCase()));
+          if(el.wordmark.toLowerCase().includes(this.searchTerm.toLowerCase())) {
+            return acc += 1
           }
         }, 0)
-        console.log(riskNumber);
+        console.log('risk number', riskNumber);
         switch (true) {
-          case riskNumber > 1:
+          case riskNumber >= 1:
             results.risk = 'high'
             break;
           case this.fedralResults.length > 5:
@@ -92,15 +92,22 @@ export default {
         risk: '',
         trademarks: []
       }
-      if(!this.stateResults.length === 0) {
-        let riskNumber = this.stateResults.reduce((acc, el) =>{
-          results.trademarks.push(el.wordmark)
-          if(el.wordmark === this.searchTerm) {
-            return acc++
+      var riskNumber = 0;
+      if(!this.stateResults.length == 0) {
+        console.log('if triggered');
+        riskNumber = this.stateResults.reduce((acc, el) =>{
+          let cleanName = el.name.replace(/%20/g, " ");
+          results.trademarks.push(cleanName)
+          console.log('clean name', cleanName);
+          console.log('state reduce', cleanName.toLowerCase().includes(this.searchTerm.toLowerCase()));
+          if(cleanName.toLowerCase().includes(this.searchTerm.toLowerCase())) {
+            return acc += 1;
           }
         }, 0)
+        console.log('state risk number', riskNumber);
         switch (true) {
-          case riskNumber > 1:
+          case riskNumber >= 1:
+            console.log('switch 1');
             results.risk = 'high'
             break;
           case this.stateResults.length > 5:
@@ -110,6 +117,7 @@ export default {
             results.risk = 'middle'
             break;
           default:
+            console.log('switch default');
             results.risk = 'low'
         }
         this.stateRisk = results

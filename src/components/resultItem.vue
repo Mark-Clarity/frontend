@@ -35,7 +35,7 @@ export default {
       if(!this.resultData.risk) {
         return false
       } else {
-      return this.resultData.risk === 'medium'
+      return this.resultData.risk === 'middle'
       }
     },
     isHighRisk() {
