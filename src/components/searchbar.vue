@@ -23,7 +23,7 @@ export default {
       inputPlaceholder: 'Company Name'
     }
   },
-  props: ['stateSearch', 'fedralSearch'],
+  props: ['stateSearch', 'federalSearch'],
   methods: {
     clearPlaceholder() {
       this.inputPlaceholder = ''
@@ -33,7 +33,7 @@ export default {
     },
     sendSearches() {
       this.stateSearch(this.searchTerm, 'co');
-      this.fedralSearch(this.searchTerm);
+      this.federalSearch(this.searchTerm);
     }
   }
 }

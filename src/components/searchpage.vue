@@ -1,6 +1,6 @@
 <template>
   <div id='searchpage'>
-    <searchbar class="search-bar" :stateSearch="stateSearch" :fedralSearch="fedralSearch"></searchbar>
+    <searchbar class="search-bar" :stateSearch="stateSearch" :federalSearch="federalSearch"></searchbar>
     <resultItem :resultData="federalRisk"></resultItem>
     <resultItem :resultData="stateRisk"></resultItem>
   </div>
@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       stateResults: [],
-      fedralResults: [],
+      federalResults: [],
       stateRisk: {type: 'State'},
       federalRisk: {type: 'Federal'},
       searchTerm: ''
@@ -35,33 +35,33 @@ export default {
           this.stateResultsProcessed()
         })
     },
-    fedralSearch(term) {
+    federalSearch(term) {
       fetch(`http://162.212.158.116/federal_search?query=${term}`)
         .then(res => res.json())
         .then(res => {
           console.log('Federal', res);
           if (res.count === 0) {
-            this.fedralResults = []
+            this.federalResults = []
           } else {
-          this.fedralResults = res.trademarks;
+          this.federalResults = res.trademarks;
         }
-          this.fedralResultsProcessed()
+          this.federalResultsProcessed()
         })
 
     },
-    fedralResultsProcessed() {
+    federalResultsProcessed() {
       let results = {
-        type: 'Fedral',
+        type: 'Federal',
         risk: '',
         trademarks: []
       }
-      console.log(!this.fedralResults.length == 0);
+      console.log(!this.federalResults.length == 0);
       var riskNumber = 0;
-      if(!this.fedralResults.length == 0) {
-        this.fedralResults.forEach((el) => {
+      if(!this.federalResults.length == 0) {
+        this.federalResults.forEach((el) => {
           results.trademarks.push(el.wordmark)
         })
-        riskNumber = this.fedralResults.reduce((acc, el) =>{
+        riskNumber = this.federalResults.reduce((acc, el) =>{
           console.log('reduce', el.wordmark.toLowerCase().includes(this.searchTerm.toLowerCase()));
           if(el.wordmark.toLowerCase().includes(this.searchTerm.toLowerCase())) {
             return acc += 1
@@ -72,10 +72,10 @@ export default {
           case riskNumber >= 1:
             results.risk = 'high'
             break;
-          case this.fedralResults.length > 5:
+          case this.federalResults.length > 5:
             results.risk = 'high'
             break;
-          case this.fedralResults.length > 2:
+          case this.federalResults.length > 2:
             results.risk = 'middle'
             break;
           default:
@@ -83,7 +83,7 @@ export default {
         }
         this.federalRisk = results
       } else {
-        this.federalRisk = {type: 'Fedral', risk: 'low'}
+        this.federalRisk = {type: 'Federal', risk: 'low'}
       }
     },
     stateResultsProcessed() {
