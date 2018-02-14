@@ -30,7 +30,6 @@ export default {
       fetch(`http://162.212.158.116/state_search?query=${term}&state=${state}`)
         .then(res => res.json())
         .then(res => {
-          console.log('state', res);
           this.stateResults = res.data;
           this.stateResultsProcessed()
         })
@@ -39,7 +38,6 @@ export default {
       fetch(`http://162.212.158.116/federal_search?query=${term}`)
         .then(res => res.json())
         .then(res => {
-          console.log('Federal', res);
           if (res.count === 0) {
             this.federalResults = []
           } else {
@@ -55,19 +53,16 @@ export default {
         risk: '',
         trademarks: []
       }
-      console.log(!this.federalResults.length == 0);
       var riskNumber = 0;
       if(!this.federalResults.length == 0) {
         this.federalResults.forEach((el) => {
           results.trademarks.push(el.wordmark)
         })
         riskNumber = this.federalResults.reduce((acc, el) =>{
-          console.log('reduce', el.wordmark.toLowerCase().includes(this.searchTerm.toLowerCase()));
           if(el.wordmark.toLowerCase().includes(this.searchTerm.toLowerCase())) {
             return acc += 1
           }
         }, 0)
-        console.log('risk number', riskNumber);
         switch (true) {
           case riskNumber >= 1:
             results.risk = 'high'
@@ -94,20 +89,15 @@ export default {
       }
       var riskNumber = 0;
       if(!this.stateResults.length == 0) {
-        console.log('if triggered');
         riskNumber = this.stateResults.reduce((acc, el) =>{
           let cleanName = el.name.replace(/%20/g, " ");
           results.trademarks.push(cleanName)
-          console.log('clean name', cleanName);
-          console.log('state reduce', cleanName.toLowerCase().includes(this.searchTerm.toLowerCase()));
           if(cleanName.toLowerCase().includes(this.searchTerm.toLowerCase())) {
             return acc += 1;
           }
         }, 0)
-        console.log('state risk number', riskNumber);
         switch (true) {
           case riskNumber >= 1:
-            console.log('switch 1');
             results.risk = 'high'
             break;
           case this.stateResults.length > 5:
@@ -117,7 +107,6 @@ export default {
             results.risk = 'middle'
             break;
           default:
-            console.log('switch default');
             results.risk = 'low'
         }
         this.stateRisk = results
